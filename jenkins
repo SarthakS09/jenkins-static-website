@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/SarthakS09/jenkins-static-website.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building static website...'
+                sh 'ls -la'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    sudo rm -rf /var/www/html/*
+                    sudo cp -r ./* /var/www/html/
+                '''
+            }
+        }
+
+        stage('Restart Apache') {
+            steps {
+                sh 'sudo systemctl restart apache2'
+            }
+        }
+    }
+}
